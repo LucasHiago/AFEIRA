@@ -1,0 +1,359 @@
+* {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-webkit-scrollbar {
+    width: 1px;
+    height: 1px;
+  }
+  
+  &::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #e1e1e1;
+    border: 0px none #ffffff;
+    border-radius: 50px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #ffffff;
+  }
+  
+  &::-webkit-scrollbar-thumb:active {
+    background: #000000;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #666666;
+    border: 0px none #ffffff;
+    border-radius: 50px;
+  }
+  
+  &::-webkit-scrollbar-track:hover {
+    background: #666666;
+  }
+  
+  &::-webkit-scrollbar-track:active {
+    background: #333333;
+  }
+  
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  input, button {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  li {
+    border-radius: 4px;
+  }
+}
+
+body {
+  @media screen and (max-width: 992px) {
+    overflow: hidden;
+  }
+}
+
+.product-controller {
+  @media screen and (max-width: 992px) {
+    overflow: hidden;
+  }
+
+  .limit-rest {
+    h1 {
+      @media screen and (max-width: 992px) {
+        font-size: 1.25em;
+      }
+    }
+  }
+
+  .progress-bar {
+    width: 100%;
+    background-color: transparent;
+    border-radius: 5px;
+    height: 10px;
+  }
+  
+  .progress {
+    height: 100%;
+    &.normal {
+      background-color: rgb(53, 202, 110);
+    }
+  
+    &.warning {
+      background-color: rgb(210, 228, 49);
+    }
+  
+    &.danger {
+      background-color: rgb(228, 49, 64);
+    }
+  }
+
+  .product-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @media screen and (max-width: 992px) {
+      gap: 4px;
+    }
+
+    .insert-product {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+
+      @media screen and (max-width: 992px) {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .product-actions {
+        @media screen and (max-width: 992px) {
+          flex-direction: row !important;
+          flex-wrap: wrap;
+          margin-top: 8px;
+
+          input {
+            max-width: 50%;
+            &:nth-child(2) {
+              max-width: 45%;
+            }
+          }
+        }
+      }
+
+      .product-actions, .list-actions {
+        flex: 1 auto;
+
+        @media screen and (max-width: 992px) {
+          flex-direction: column;
+          width: 100%;
+        }
+      }
+
+      .list-actions {
+        max-width: 20vw;
+
+        @media screen and (max-width: 992px) {
+          max-width: 100%;
+        }
+  
+      }
+
+      .product-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        position: relative;
+
+        .suggest-products {
+          position: absolute;
+          left: 0;
+          top: 0;
+          max-width: 485px;
+          width: 100%;
+
+          ul {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            li {
+              transition: all .45s ease-in-out;
+              cursor: pointer;
+              &:hover {
+                color: coral;
+              }
+            }
+          }
+
+          &.active {
+            max-height: 50vh;
+            overflow-y: auto;
+            z-index: 9;
+            background: white;
+            padding: 16px;
+            border: 1px solid #ccc;
+            width: 50%;
+          }
+        }
+      }
+    }
+
+    .product-list {
+      ul {
+        display: flex;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
+
+        @media screen and (max-width: 992px) {
+          overflow-y: auto;
+          padding: 0 8px 0 0;
+          margin: 8px -8px 8px 0;
+        }
+
+        @media screen and (max-height: 992px) {
+          max-height: 60vh;
+        }
+
+        @media screen and (max-height: 668px) {
+          max-height: 50vh;
+        }
+
+        li {
+          display: flex;
+          align-items: center;
+          flex: 1;
+          padding: 4px 4px 4px 8px;
+          border: 1px solid #ccc;
+          gap: 16px;
+
+          @media screen and (max-width: 992px) {
+            padding: 8px;
+            gap: 8px;
+            flex-wrap: wrap;
+            width: 100%;
+          }
+    
+          &:nth-child(even) {
+            background: rgb(248, 248, 248);
+          }
+
+          span, strong, input {
+            flex: 1 auto;
+          }
+          
+          .price {
+            display: flex;
+            justify-content: end;
+            max-width: 200px;
+
+            @media screen and (max-width: 992px) {
+              max-width: 100%;
+              justify-content: space-between;
+              font-weight: bold;
+
+              small {
+                margin-right: 8px;
+              }
+            }
+          }
+
+          .price-quantity {
+            display: flex;
+            justify-content: end;
+          }
+
+          span {
+            text-wrap: nowrap;
+            @media screen and (max-width: 992px) {
+              &:first-child {
+                flex: 100%;
+              }
+            }
+          }
+
+          input, button {
+            max-width: 80px;
+          }
+
+          input {
+            @media screen and (max-width: 992px) {
+              max-width: 47%;
+
+              &:nth-child(3) {
+                max-width: 50%;
+              }
+            }
+          }
+
+          button {
+            background: rgb(228, 49, 64);
+            color: white;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .product-coust {
+      @media screen and (max-width: 992px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .progress-circle-container {
+      width: 50vw;
+      height: 50vh;
+      display: inline-block;
+      position: fixed;
+      bottom: -5vh;
+      right: -15vw;
+      pointer-events: none;
+      opacity: .35;
+      z-index: -1;
+
+      @media screen and (max-width: 992px) {
+        position: unset;
+        transform: rotate(90deg);
+        height: 25vh;
+      }
+
+      .progress-circle {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      
+      .circle-bg {
+        fill: none;
+        stroke: transparent;
+        stroke-width: 3.8;
+      }
+      
+      .circle {
+        fill: none;
+        stroke-width: 2.8;
+        stroke: #76c7c0;
+        stroke-linecap: round;
+        transition: stroke-dasharray 0.3s;
+      }
+      
+      .percentage {
+        fill: #9b9b9b;
+        font-family: Arial, sans-serif;
+        font-size: 0.25em;
+        text-anchor: middle;
+      }
+
+      .priceValue {
+        fill: #000;
+        font-family: Arial, sans-serif;
+        font-size: 0.15em;
+        text-anchor: middle;
+        font-weight: bold;
+      }
+    }
+  }
+}

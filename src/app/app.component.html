@@ -1,0 +1,68 @@
+<div class="product-controller">
+  <div class="progress-bar">
+    <div class="progress" [ngClass]="getLimitProgress" [style.width]="getProgressPercentage + '%'"></div>
+  </div>
+  <div class="product-content">
+    <div class="limit-rest">
+      <h1> Limite disponível: {{ getRemanescentValue | currency: 'BRL' }} </h1>
+    </div>
+    <div class="insert-product">
+      <div class="product-actions">
+        <input type="text" placeholder="Nome do produto" (input)="onProductNameInput($event)" [(ngModel)]="productName">
+        <input type="number" placeholder="Valor do produto" [(ngModel)]="productValue">
+        <button (click)="addProduct()">Adicionar</button>
+        <div class="suggest-products" [class.active]="filteredProductTipNames.length > 0">
+          @if (filteredProductTipNames.length > 0) {
+            <ul>
+              @for (name of filteredProductTipNames; track name) {
+                <li (click)="selectProductName(name)" [innerText]="name"></li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+      <div class="list-actions">
+        <input type="text" placeholder="Limite total" [(ngModel)]="limit">
+      </div>
+    </div>
+    <div class="product-list">
+      <ul>
+        @for (product of productOrderList; track product) {
+          <li>
+            <span> <strong> #{{ product.id }}  </strong> - {{ product.name }} </span>
+            <input type="text" class="price-quantity" [(ngModel)]="product.value" (input)="changeValue(product)">
+            <input type="number" [(ngModel)]="product.quantity" (input)="changeQuantity(product)">
+            <span class="price"> <small>Total quantidade: </small>  {{ calculateValueByQuantity(product) | currency: 'BRL' }}  </span>
+            <button>X</button>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="product-coust">
+      <div class="progress-circle-container">
+        <svg class="progress-circle" viewBox="0 0 36 36">
+          <path
+            class="circle-bg"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+          <path
+            class="circle"
+            [attr.stroke-dasharray]="getProgressPercentage + ', 100'"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+          <text x="18" y="18.35" class="percentage"> {{ getProgressPercentage | number: '1.2-2' }}% </text>
+          <text x="18" y="20.65" class="priceValue"> {{ getTotalProductList | currency: 'BRL' }} </text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  
+  <!-- <div class="footer-actions">
+    <button>Exportar</button>
+    <button>Baixar</button>
+  </div> -->
+</div>
