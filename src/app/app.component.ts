@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AppService } from './app.service';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-  productTipNames = ['Arroz', 'Arroz integral', 'Abacate', 'Alface', 'Açaí', 'Toddy', 'Biscoito de sal', 'Biscoito doce', 'Feijão', 'Macarrão', 'Azeite', 'Farofa', 'Óleo', 'Fubá', 'Massa de lasanha', 'Milho de pipoca', 'Milho cozido', 'Ervilha', 'Massa de tomate', 'Extrato de tomate', 'Maionese', 'Mostarda', 'Molho de salada', 'Ketchup', 'Molho inglês', 'Batata palha', 'Miojo', 'Nescau', 'Leite', 'Leite em pó', 'Cup noodles', 'Batata', 'Pimenta', 'Champignon', 'Palmito', 'Farinha lactea', 'Farinha de trigo', 'Açúcar', 'Sazón', 'Chimichurry', 'Lemon pepper', 'Sal', 'Sal de limão', 'Vinagre', 'Café', 'Filtro de papel', 'Curry', 'Açafrão', 'Orégano', 'Creme de leite', 'Leite condensado', 'Suco', 'Energético', 'Cerveja', 'Queijo ralado', 'Queijo', 'Presunto', 'Mussarela', 'Sucrilho', 'Desodorante', 'Rexona', 'Old Spice', 'Bolinho', 'Sabonete', 'Papel higiênico', 'Veja', 'Batutinha', 'Cloro', 'Desinfetante', 'Vanish', 'Bucha', 'Bombrill', 'Detergente', 'Pasta de dente', 'Colgate', 'Sensodyne', 'Alcoól', 'Sabão em pó', 'Amaciante', 'Papel toalha', 'Cotonete', 'Lenço umedecido', 'Papel alumínio', 'Saco de congelar', 'Saco de lixo', 'Pano de prato', 'Salgadinho', 'Kapo', 'Feijão branco', 'Canjiquinha', 'Cebola', 'Brócoli', 'Beterraba', 'Cenoura', 'Milho', 'Tomate', 'Pimentão', 'Pêra', 'Maçã', 'Maçã verde', 'Ameixa', 'Ovo', 'Uva', 'Bacon', 'Requeijão', 'Manteiga', 'Yorgute', 'Chamito', 'Massa de pastel', 'Massa pronta de lasanha', 'Couve-flor', 'Alho', 'Abacaxi', 'Mandioca', 'Limão', 'Maracujá', 'Cenoura baroa', 'Morango', 'Abobora', 'Amora', 'Acerola', 'Nutela', 'Cebolinha', 'Laranja', 'Mexerica', 'Chocolate', 'Doce', 'Peito de frango', 'Hamburguer', 'Pão de forma', 'Cereja', 'Shampoo', 'Creme', 'Clear Men', 'Listerini', 'Tandy', 'Fio dental', 'Aveia', 'Limpa alumínio', 'Sabonete Líquido'];
+  productTipNames = ['Arroz', 'Arroz integral', 'Abacate', 'Alface', 'Açaí', 'Toddy', 'Biscoito de sal', 'Biscoito doce', 'Feijão', 'Macarrão', 'Azeite', 'Farofa', 'Óleo', 'Fubá', 'Massa de lasanha', 'Milho de pipoca', 'Milho cozido', 'Ervilha', 'Massa de tomate', 'Extrato de tomate', 'Maionese', 'Mostarda', 'Molho de salada', 'Ketchup', 'Molho inglês', 'Batata palha', 'Miojo', 'Nescau', 'Leite', 'Leite em pó', 'Cup noodles', 'Batata', 'Pimenta', 'Champignon', 'Palmito', 'Farinha lactea', 'Farinha de trigo', 'Açúcar', 'Sazón', 'Chimichurry', 'Lemon pepper', 'Sal', 'Sal de limão', 'Vinagre', 'Café', 'Filtro de papel', 'Curry', 'Açafrão', 'Orégano', 'Creme de leite', 'Leite condensado', 'Suco', 'Energético', 'Cerveja', 'Queijo ralado', 'Queijo', 'Presunto', 'Mussarela', 'Sucrilho', 'Desodorante', 'Rexona', 'Old Spice', 'Bolinho', 'Sabonete', 'Papel higiênico', 'Veja', 'Batutinha', 'Cloro', 'Desinfetante', 'Vanish', 'Bucha', 'Bombrill', 'Detergente', 'Pasta de dente', 'Colgate', 'Sensodyne', 'Alcoól', 'Sabão em pó', 'Amaciante', 'Papel toalha', 'Cotonete', 'Lenço umedecido', 'Papel alumínio', 'Saco de congelar', 'Saco de lixo', 'Pano de prato', 'Salgadinho', 'Kapo', 'Feijão branco', 'Canjiquinha', 'Cebola', 'Brócoli', 'Beterraba', 'Cenoura', 'Milho', 'Tomate', 'Pimentão', 'Pêra', 'Maçã', 'Maçã verde', 'Ameixa', 'Ovo', 'Uva', 'Bacon', 'Requeijão', 'Manteiga', 'Yorgute', 'Chamito', 'Massa de pastel', 'Massa pronta de lasanha', 'Couve-flor', 'Alho', 'Abacaxi', 'Mandioca', 'Limão', 'Maracujá', 'Cenoura baroa', 'Morango', 'Abobora', 'Amora', 'Acerola', 'Nutela', 'Cebolinha', 'Laranja', 'Mexerica', 'Chocolate', 'Doce', 'Peito de frango', 'Hamburguer', 'Pão de forma', 'Cereja', 'Shampoo', 'Creme', 'Clear Men', 'Listerini', 'Tandy', 'Fio dental', 'Aveia', 'Limpa alumínio', 'Sabonete Líquido', 'Feijão preto', 'Feijão carioca', 'Lentilha', 'Grão-de-bico', 'Arroz parboilizado', 'Arroz arbóreo', 'Farinha de mandioca', 'Tapioca', 'Flocos de milho', 'Cuscuz', 'Aipim', 'Farinha de rosca', 'Polvilho doce', 'Granola', 'Mel', 'Manteiga de amendoim', 'Molho shoyu', 'Molho de pimenta', 'Açúcar mascavo', 'Açúcar demerara', 'Achocolatado em pó', 'Leite de coco', 'Leite de amêndoas', 'Leite de soja', 'Leite de arroz', 'Bebida de aveia', 'Refrigerante', 'Água com gás', 'Água de coco', 'Bebida isotônica', 'Banana'];
+    
 
   filteredProductTipNames: string[] = [];
   productName: string = '';
@@ -24,41 +27,35 @@ export class AppComponent implements OnInit {
   nextId: number = 1;
   getTotalProductList: number = 0;
 
-  productOrderList: { id: number; value: number; name: string; quantity: number; }[] = [
-    {
-      "id": 1,
-      "name": "Arroz",
-      "value": 29.8,
-      "quantity": 5
-    },
-    {
-      "id": 2,
-      "name": "Feijão",
-      "value": 12.88,
-      "quantity": 5
-    },
-    {
-      "id": 3,
-      "name": "Macarrão Vilma Espaguete n°8",
-      "value": 4.69,
-      "quantity": 5
-    },
-    {
-      "id": 4,
-      "name": "Molho de tomate",
-      "value": 2.99,
-      "quantity": 10
-    },
-    {
-      "id": 5,
-      "name": "Óleo Soja",
-      "value": 6.79,
-      "quantity": 5
-    }
-  ];
+  productOrderList: { id: number; value: number; name: string; quantity: number; }[] = [];
+
+  constructor(private api: AppService) {}
 
   ngOnInit(): void {
-      this.getTotalValue();
+    this.feed();
+  }
+
+  feed() {
+    this.api.feed().subscribe(items => {
+      this.productOrderList = items;
+      this.getTotalValue()
+    })
+  }
+
+  addFeed(product: any) {
+    this.api.addFeed(product)
+    .pipe(debounceTime(1000))
+    .subscribe(() => this.executeActions());
+  }
+
+  updateFeed(product: any, id: any) {
+    this.api.updateFeed(product, id)
+    .pipe(debounceTime(1000))
+    .subscribe(() => this.executeActions());
+  }
+
+  deleteFeed(id: any) {
+    this.api.deleteFeed(id).subscribe(() => this.executeActions());
   }
 
   onProductNameInput(event: Event): void {
@@ -77,7 +74,7 @@ export class AppComponent implements OnInit {
 
   addProduct(): void {
     if (this.productName && this.productValue) {
-      this.productOrderList.push({ id: this.checkListQuantity(), name: this.productName, value: this.productValue, quantity: 1 });
+      this.addFeed({ name: this.productName, value: this.productValue, quantity: 1 });
       this.productName = '';
       this.productValue = 0;
     } else {
@@ -92,31 +89,11 @@ export class AppComponent implements OnInit {
   }
 
   changeQuantity(product: any) {
-    this.productOrderList = this.productOrderList.map(productOrder => {
-      if (product.id === productOrder.id) {
-        return {
-          ...productOrder,
-          quantity: product.quantity
-        };
-      }
-      return productOrder;
-    });
-
-    this.executeActions();
+    this.updateFeed(product, product.id);
   }
 
   changeValue(product: any) {
-    this.productOrderList = this.productOrderList.map(productOrder => {
-      if (product.id === productOrder.id) {
-        return {
-          ...productOrder,
-          value: product.value
-        };
-      }
-      return productOrder;
-    });
-
-    this.executeActions();
+    this.updateFeed(product, product.id);
   }
 
   getTotalValue() {
@@ -149,6 +126,7 @@ export class AppComponent implements OnInit {
   }
 
   executeActions() {
+    this.feed();
     this.getTotalValue();
     this.getProgressPercentage;
   }

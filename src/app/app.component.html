@@ -33,7 +33,7 @@
             <input type="text" class="price-quantity" [(ngModel)]="product.value" (input)="changeValue(product)">
             <input type="number" [(ngModel)]="product.quantity" (input)="changeQuantity(product)">
             <span class="price"> <small>Total quantidade: </small>  {{ calculateValueByQuantity(product) | currency: 'BRL' }}  </span>
-            <button>X</button>
+            <button (click)="deleteFeed(product.id)">X</button>
           </li>
         }
       </ul>
