@@ -9,9 +9,10 @@ import { io, Socket } from 'socket.io-client';
 export class AppService {
 
   socket?: Socket;
-  //url: string = `https://afeira-api.onrender.com/products`;
-  url: string = `http://10.0.0.112:4000/products`;
-  wss: string = `http://10.0.0.112:4000`;
+  url: string = `https://afeira-api.onrender.com/products`;
+  wss: string = `https://afeira-api.onrender.com`;
+  //url: string = `http://10.0.0.112:4000/products`;
+  //wss: string = `http://10.0.0.112:4000`;
 
   public message$: BehaviorSubject<any> = new BehaviorSubject(undefined);
 
