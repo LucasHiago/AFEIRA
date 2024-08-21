@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppService } from './app.service';
 import { debounceTime } from 'rxjs';
@@ -29,15 +29,40 @@ export class AppComponent implements OnInit {
 
   productOrderList: { id: number; value: number; name: string; quantity: number; }[] = [];
 
+  hideMobile: boolean = false;
+  expand: boolean = false;
+  chatActive: boolean = false;
+  chatUser: any;
+
+  chatName: string = '';
+  chatMessage: string = '';
+
+  totalUsers: number = 0;
+  messages: any = [];
+  mySocketId: any = '';
+
+  @ViewChild('areaMessage') areaMessage!: ElementRef;
+  
+  chatInitialized: boolean = false;
+
   constructor(private api: AppService) {}
 
   ngOnInit(): void {
     this.feed();
+    this.listenersSocket();
+    this.getWindowSize();
+    window.addEventListener('resize', this.getWindowSize.bind(this));
+  }
+
+  //TODO: PRODUCT LIST SPACE
+
+  expandAction() {
+    this.expand = !this.expand;
   }
 
   feed() {
     this.api.feed().subscribe(items => {
-      this.productOrderList = items;
+      this.productOrderList = items.sort((a: any, b: any) => a.name.localeCompare(b.name));
       this.getTotalValue()
     })
   }
@@ -46,16 +71,19 @@ export class AppComponent implements OnInit {
     this.api.addFeed(product)
     .pipe(debounceTime(1000))
     .subscribe(() => this.executeActions());
+    this.api.emit('feed', {});
   }
 
   updateFeed(product: any, id: any) {
     this.api.updateFeed(product, id)
     .pipe(debounceTime(1000))
     .subscribe(() => this.executeActions());
+    this.api.emit('feed', {});
   }
 
   deleteFeed(id: any) {
     this.api.deleteFeed(id).subscribe(() => this.executeActions());
+    this.api.emit('feed', {});
   }
 
   onProductNameInput(event: Event): void {
@@ -129,5 +157,101 @@ export class AppComponent implements OnInit {
     this.feed();
     this.getTotalValue();
     this.getProgressPercentage;
+  }
+
+  //TODO: SOCKET SPACE
+  getSocketMessage() {
+    this.api.listen('message').subscribe((data: any) => {
+      this.mySocketId = data.socketId;
+      console.log(data.data.message)
+    });
+  }
+
+  onUserChatName(event: Event): void {
+    const input = (event.target as HTMLInputElement).value;
+    if(input.length > 0) {
+      this.chatName = input;
+    } else {
+      this.chatName = '';
+    }
+  }
+
+  onUserTextMessage(event: Event): void {
+    let input = (event.target as HTMLInputElement).value;
+    if(input.length > 0) {
+      this.chatMessage = input;
+    } else {
+      this.chatMessage = '';
+    }
+  }
+  
+
+  initChat() {
+    if(!this.chatInitialized) {
+      this.api.emit('clientEvent', { name: this.chatName, message: 'Juntou-se ao chat' });
+      this.chatInitialized = true;
+    }
+  }
+
+  openChat() {
+    this.chatActive = true;
+  }
+
+  closeChat() {
+    this.chatActive = false;
+  }
+
+  endChat() {
+    this.api.emit('buceta', null);
+    this.api.emit('sair', { endchat: 'end' });
+    this.chatInitialized = false;
+    this.chatActive = false;
+  }
+
+  sendMessage() {
+    console.log(this.chatMessage)
+    this.api.emit('chat', this.chatMessage);
+    this.areaMessage.nativeElement.value = '';
+    this.chatInitialized = true;
+  }
+
+  getUserList() {
+    this.api.listen('connectedUsers').subscribe((data: any) => {
+      this.totalUsers = data.data.length;
+    });
+  }
+
+  getChatMesage() {
+    this.api.listen('chat').subscribe((data: any) => {
+      const message = data.data.message.data;
+      const name = data.data.name;
+      const socketId = data.data.id;
+      this.messages.push({ message, name, socketId });
+    });
+  }
+
+  getFeed() {
+    this.api.listen('feed').subscribe(() => {
+      console.log('feed executou')
+      this.executeActions();
+    })
+  }
+
+  listenersSocket() {
+    this.getSocketMessage();
+    this.getUserList();
+    this.getChatMesage();
+    this.getFeed();
+  }
+
+  //TODO: DOM SPACE
+  getWindowSize() {
+    if(window.innerWidth > 992) {
+      this.hideMobile = true;
+    }
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.getWindowSize.bind(this));
   }
 }
